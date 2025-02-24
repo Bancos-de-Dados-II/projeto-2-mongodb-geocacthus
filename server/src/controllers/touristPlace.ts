@@ -1,5 +1,5 @@
 import { ModelStatic } from "sequelize";
-import { TouristPlace as TouristPlaceModel } from "../models/touristPlace";
+import TouristPlaceModel from "../models/touristPlace";
 
 interface ITouristPlaceDTO {
     name: string;
@@ -23,9 +23,10 @@ interface ITouristPlaceAuth {
 }
 
 class TouristPlace {
-    private tourist
-    constructor(touristLocationModel: ModelStatic<TouristPlaceModel>) {
-        this.tourist = touristLocationModel;
+    private touristPlaceModel: typeof TouristPlaceModel;
+
+    constructor(touristLocationModel: typeof TouristPlaceModel) {
+        this.touristPlaceModel = touristLocationModel;
     }
 
     async createTouristPlace(touristPlaceDTO: ITouristPlaceDTO, userId: string) {
@@ -34,16 +35,20 @@ class TouristPlace {
         if (!name || !description || !category || !image || !phone || !latitude || !longitude) return { status: 400, message: "Missing required fields" };
 
         try {
-            const newTourist = await this.tourist.create({ 
+            const newTourist = new this.touristPlaceModel({ 
                 name, 
                 description, 
                 category, 
                 image, 
                 phone, 
-                latitude, 
-                longitude,
-                userId,
+                location: {
+                    type: 'Point',
+                    coordinates: [longitude, latitude],
+                },
+                userID: userId,
             });
+
+            await newTourist.save();
 
             return { status: 201, message: "Tourist place created successfully", data: newTourist };
         } catch (error) {
@@ -54,7 +59,7 @@ class TouristPlace {
 
     async getTouristPlace() {
         try {
-            const tourists = await this.tourist.findAll();
+            const tourists = await this.touristPlaceModel.find().exec();
 
             return { status: 200, message: "Tourist places retrieved successfully", data: tourists };
         } catch (error) {
@@ -65,9 +70,7 @@ class TouristPlace {
 
     async getTouristPlaceById(touristPlaceId: string) {
         try {
-            const tourist = await this.tourist.findOne({
-                where: { id: touristPlaceId },
-            });
+            const tourist = await this.touristPlaceModel.findById(touristPlaceId).exec();
 
             if (!tourist) return { status: 404, message: "Tourist place not found", data: null };
 
@@ -84,7 +87,7 @@ class TouristPlace {
 
             if (!tourist) return { status: 404, message: "Tourist place not found" };
 
-            await tourist.update(updates);
+            await tourist.updateOne(updates).exec();
 
             return { status: 200, message: "Tourist place updated successfully", data: tourist };
         } catch (error) {
@@ -99,7 +102,7 @@ class TouristPlace {
 
             if (!tourist) return { status: 404, message: "Tourist place not found" };
 
-            await tourist.destroy();
+            await tourist.deleteOne().exec();
 
             return { status: 200, message: "Tourist place deleted successfully" };
         } catch (error) {

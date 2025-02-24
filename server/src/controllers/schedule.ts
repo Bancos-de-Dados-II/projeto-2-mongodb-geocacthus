@@ -1,5 +1,4 @@
-import { ModelStatic } from "sequelize";
-import { Schedules as SchedulesModel } from "../models/schedule";
+import SchedulesModel from "../models/schedule";
 
 interface ISchedulesDTO {
     day: string;
@@ -8,24 +7,26 @@ interface ISchedulesDTO {
 }
 
 class Schedules {
-    private schedule: ModelStatic<SchedulesModel>;
+    private schedule: typeof SchedulesModel;
 
-    constructor(scheduleModel: ModelStatic<SchedulesModel>) {
+    constructor(scheduleModel: typeof SchedulesModel) {
         this.schedule = scheduleModel;
     }
 
-    async createHour(scheduleDTO: ISchedulesDTO, touristId: string) {
+    async createHour(scheduleDTO: ISchedulesDTO, touristLocationID: string) {
         const { day, firstHours, lastHours } = scheduleDTO;
 
         if (!day || !firstHours || !lastHours) return { status: 400, message: "Missing required fields" };
 
         try {
-            const newSchedule = await this.schedule.create({ 
-                day, 
-                firstHours, 
+            const newSchedule = new this.schedule({
+                day,
+                firstHours,
                 lastHours,
-                touristId,
+                touristLocationID,
             });
+
+            await newSchedule.save();
 
             return { status: 201, message: "Schedule created successfully", data: newSchedule };
         } catch (error) {
@@ -34,11 +35,9 @@ class Schedules {
         }
     }
 
-    async getReview(touristId: string) {
+    async getReview(touristLocationID: string) {
         try {
-            const schedules = await this.schedule.findAll({
-                where: { touristId },
-            });
+            const schedules = await this.schedule.find({ touristLocationID }).exec();
 
             return { status: 200, message: "Schedules retrieved successfully", data: schedules };
         } catch (error) {

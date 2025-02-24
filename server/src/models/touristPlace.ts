@@ -1,87 +1,57 @@
-import { CreationOptional, DataTypes, Model, Sequelize } from "sequelize";
-import db from "../config/sequelize";
-import User from "./user";
-import Review from "./review";
-import Schedules from "./schedule";
+import mongoose, { Schema, Document, Model } from 'mongoose';
+import pointSchema from './point';
 
-
-class TouristPlace extends Model {
-    declare id: CreationOptional<string>;
-    declare name: string;
-    declare description: string;
-    declare category: string;
-    declare image: string;
-    declare phone: string;
+interface ITouristPlace {
+    name: string;
+    description: string;
+    category: string;
+    image: string;
+    phone: string;
+    location: {
+        type: string;
+        coordinates: [number, number];
+    };
+    userID: String;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
-TouristPlace.init({
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true,
-    },
+const TouristPlaceSchema: Schema = new Schema<ITouristPlace>({
     name: {
-        type: DataTypes.STRING(100),
-        allowNull: false, 
-        validate: {
-            notEmpty: true,
-        },
+        type: String,
+        required: true
     },
     description: {
-        type: DataTypes.TEXT,
-        allowNull: false,
+        type: String,
+        required: true
     },
     category: {
-        type: DataTypes.STRING(100),
-        allowNull: false, 
-        validate: {
-            notEmpty: true,
-        },
+        type: String,
+        required: true
     },
     image: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-            isUrl: true,
-        },
+        type: String,
+        required: true,
     },
     phone: {
-        type: DataTypes.STRING(100),
-        allowNull: false,
-        validate: {
-            isNumeric: true,
-            len: [10, 15],
-        },
+        type: String,
+        required: true
     },
-    userID: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: 'users',
-            key: 'id',
-        }
+    location: { // [longitude, latitude]
+        type: pointSchema,
+        required: true
+    },
+    userID: { 
+        type: String, 
+        required: true, 
+        ref: 'User' 
     },
 }, {
-    sequelize: db,
-    tableName: 'tourist-places',
-    timestamps: true,
-})
-
-TouristPlace.hasMany(Review, {
-    foreignKey: 'touristLocationID',
-    as: 'evaluationsLocations',
+    collection: 'touristPlaces',
+    timestamps: true
 });
 
-TouristPlace.hasMany(Schedules, {
-    foreignKey: 'touristLocationID',
-    as: 'openingHours',
-});
+const TouristPlaceModel: Model<ITouristPlace> = mongoose.model<ITouristPlace>('TouristPlace', TouristPlaceSchema);
 
-Schedules.belongsTo(TouristPlace, {
-    foreignKey: 'touristLocationID',
-    as: 'touristLocation',
-});
-
-
-export default TouristPlace;
-export { TouristPlace };
+export default TouristPlaceModel;
+export { ITouristPlace };
