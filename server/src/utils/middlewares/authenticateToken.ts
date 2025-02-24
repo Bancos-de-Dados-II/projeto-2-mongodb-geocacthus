@@ -19,6 +19,7 @@ const authenticateToken = (request: Request, response: Response, next: NextFunct
 
     try {
         const decoded = jwt.verify(token, SECRET_KEY);
+        console.log(decoded);
 
         if (typeof decoded === "object" && decoded !== null && "email" in decoded) {
             request.user = {

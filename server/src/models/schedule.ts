@@ -1,46 +1,39 @@
-import { DataTypes, Model, Sequelize } from "sequelize";
-import db from "../config/sequelize";
-import TouristPlace from "./touristPlace";
+import mongoose, { Model, Schema } from "mongoose";
 
-class Schedules extends Model {
-    declare day: string;
-    declare firstHours: string;
-    declare lastHours: string;
-    declare touristLocationID: string;
-}
 
-Schedules.init({
+interface ISchedules {
+    day: string;
+    firstHours: string;
+    lastHours: string;
+    touristLocationID: mongoose.Types.ObjectId;
+};
+
+const SchedulesSchema: Schema = new Schema<ISchedules>({
     day: {
-        type: DataTypes.STRING(10),
-        allowNull: false,
-        validate: {
-            isIn: [['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']],
-        },
-        primaryKey: true,
+        type: String,
+        required: true,
+        enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
     },
     firstHours: {
-        type: DataTypes.TIME,
-        allowNull: false,
+        type: String,
+        required: true,
     },
     lastHours: {
-        type: DataTypes.TIME,
-        allowNull: false,
+        type: String,
+        required: true,
     },
     touristLocationID: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: 'tourist-places',
-            key: 'id',
-        },
-        primaryKey: true,
-    },
+        type: Schema.Types.ObjectId,
+        ref: 'TouristPlace',
+        required: true,
+    }
 }, {
-    sequelize: db,
-    tableName: 'schedules',
-    timestamps: false,
-})
+    collection: 'schedules',
+    timestamps: false
+});
+
+const SchedulesModel: Model<ISchedules> = mongoose.model<ISchedules>('Schedules', SchedulesSchema);
 
 
-export default Schedules;
-export { Schedules };
+export default SchedulesModel;
+export { ISchedules };

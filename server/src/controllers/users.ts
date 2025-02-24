@@ -1,5 +1,5 @@
 import { ModelStatic } from "sequelize";
-import { User as UserModel } from "../models/user";
+import UserModel from "../models/user";
 
 interface IUserDTO {
     name: string;

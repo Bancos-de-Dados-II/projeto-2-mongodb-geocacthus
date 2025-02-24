@@ -33,24 +33,27 @@ router.get("/:id", async (request: Request, response: Response, next: NextFuncti
 router.post("/", authenticateToken, async (request: Request, response: Response, next: NextFunction) => {
     try {
         const userAuth = request.user;
+        console.log(userAuth);
         if (!userAuth) {
             throw new Error("Usuário não autenticado.");
         }
 
-        const { address, ...data } = request.body;
+        const { latitude, longitude, ...data } = request.body;
 
-        if (!address) {
-            throw new HttpError("O endereço é obrigatório.", 400);
+        if (!latitude || !longitude) {
+            response.status(400).json({ message: "Missing required fields: latitude and longitude" });
         }
 
-        const coordinates = await geocodingService.getCoordinates(address);
-        console.log(coordinates);
+        const locationData = {
+            ...data,
+            location: {
+                type: 'Point',
+                coordinates: [longitude, latitude],
+            }
+        };
 
-        const newLocation = await touristPlaceService.createTouristLocation(
-            { ...data, location: coordinates }, 
-            userAuth
-        );
-
+        const newLocation = await touristPlaceService.createTouristLocation(locationData, userAuth);
+      
         response.status(201).json(newLocation);
     } catch (error) {
         next(error);

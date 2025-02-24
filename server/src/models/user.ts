@@ -41,33 +41,5 @@ User.init({
     tableName: 'users',
 });
 
-User.hasMany(TouristPlace, {
-    foreignKey: 'userID',
-    as: 'createdLocations',
-});
-
-TouristPlace.belongsTo(User, {
-    foreignKey: 'userID',
-    as: 'creator',
-});
-
-User.hasMany(Review, {
-    foreignKey: 'userID',
-    as: 'evaluationsUser',
-});
-
-User.belongsToMany(TouristPlace, {
-    through: Review,
-    foreignKey: 'userID',
-    otherKey: 'touristLocationID',
-    as: 'evaluatedLocations'
-});
-
-TouristPlace.belongsToMany(User, {
-    through: Review,
-    foreignKey: 'touristLocationID',
-    otherKey: 'userID',
-    as: 'evaluators'
-});
 
 export default User;

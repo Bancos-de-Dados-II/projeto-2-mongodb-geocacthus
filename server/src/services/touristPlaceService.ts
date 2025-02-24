@@ -1,5 +1,5 @@
-import { ModelStatic } from "sequelize";
-import TouristPlace from "../models/touristPlace";
+import { Model } from "mongoose";
+import TouristPlaceModel, { ITouristPlace } from "../models/touristPlace";
 import User from "../models/user";
 import HttpError from "../utils/error/httpError";
 
@@ -8,18 +8,22 @@ interface TouristPlaceCreationData extends Partial<TouristPlace> {
 }
 
 class TouristPlaceService {
-    private touristPlaceModel: ModelStatic<TouristPlace>;
+    private touristPlaceModel: Model<ITouristPlace>;
 
-    constructor(touristPlaceModel: ModelStatic<TouristPlace>) {
+    constructor(touristPlaceModel: Model<ITouristPlace>) {
         this.touristPlaceModel = touristPlaceModel;
     }
 
     async fetchAllTouristLocations() {
-        return await this.touristPlaceModel.findAll();
+        return await this.touristPlaceModel.find()
+            .populate('evaluationsLocations openingHours')
+            .exec();
     }
     
     async fetchTouristLocationById(id: string) {
-        const location = await this.touristPlaceModel.findByPk(id);
+        const location = await this.touristPlaceModel.findById(id)
+            .populate('evaluationsLocations openingHours')
+            .exec();
         if (!location) {
             throw new Error("Local turístico não encontrado");
         }
@@ -46,32 +50,33 @@ class TouristPlaceService {
             throw new HttpError("Coordenadas inválidas.", 400);
         }
     
-        const newLocation = await this.touristPlaceModel.create({
-            ...otherData,
-            location: { type: "Point", coordinates: [location.lon, location.lat] },
+    async createTouristLocation(data: ITouristPlace, user: User) {
+        const newLocation = new this.touristPlaceModel({
+            ...data,
             userID: user.id,
         });
-    
+
+        await newLocation.save();
         return newLocation;
     }
     
-    
-    async updateTouristLocation(id: string, data: Partial<TouristPlace>) {
-        const location = await this.touristPlaceModel.findByPk(id);
+    async updateTouristLocation(id: string, data: Partial<ITouristPlace>) {
+        const location = await this.touristPlaceModel.findByIdAndUpdate(id, data, { new: true }).exec();
+      
         if (!location) {
             throw new Error("Local turístico não encontrado");
         }
-        return await location.update(data);
+        return location;
     }
     
-    async deleteTouristLocation(id: string) {
-        const location = await this.touristPlaceModel.findByPk(id);
+    async deleteTouristLocation(id: string): Promise<ITouristPlace | null> {
+        const location = await this.touristPlaceModel.findByIdAndDelete(id).exec();
         if (!location) {
             throw new Error("Local turístico não encontrado");
         }
-        await location.destroy();
-        return true;
-    }    
+
+        return location;
+    }
 }
 
 

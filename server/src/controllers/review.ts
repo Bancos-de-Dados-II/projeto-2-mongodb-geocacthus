@@ -1,5 +1,4 @@
-import { ModelStatic } from "sequelize";
-import { Review as ReviewModel } from "../models/review";
+import ReviewModel from "../models/review";
 
 interface IReviewDTO {
     rating: number;
@@ -7,9 +6,9 @@ interface IReviewDTO {
 }
 
 class Review {
-    private review: ModelStatic<ReviewModel>;
+    private review: typeof ReviewModel;
 
-    constructor(reviewModel: ModelStatic<ReviewModel>) {
+    constructor(reviewModel: typeof ReviewModel) {
         this.review = reviewModel;
     }
 
@@ -19,12 +18,14 @@ class Review {
         if (!rating || !date) return { status: 400, message: "Missing required fields" };
 
         try {
-            const newReview = await this.review.create({ 
-                rating, 
+            const newReview = new this.review({
+                rating,
                 date,
                 userId,
                 touristLocationId,
             });
+
+            await newReview.save();
 
             return { status: 201, message: "Review created successfully", data: newReview };
         } catch (error) {
@@ -35,9 +36,7 @@ class Review {
 
     async getEvaluates(touristLocationId: string) {
         try {
-            const reviews = await this.review.findAll({
-                where: { touristLocationId },
-            });
+            const reviews = await this.review.find({ touristLocationId }).exec();
 
             return { status: 200, message: "Reviews retrieved successfully", data: reviews };
         } catch (error) {
@@ -49,16 +48,14 @@ class Review {
     async deleteEvaluate(userId: string, touristLocationId: string, date: Date) {
         try {
             const review = await this.review.findOne({
-                where: {
-                    date: new Date(date),
-                    touristLocationID: touristLocationId,
-                    userID: userId,
-                },
-            });
+                date: new Date(date),
+                touristLocationId,
+                userId,
+            }).exec();
 
             if (!review) return { status: 404, message: "No reviews found for this user" };
 
-            await review.destroy();
+            await review.deleteOne().exec();
 
             return { status: 200, message: "Reviews deleted successfully" };
         } catch (error) {

@@ -1,53 +1,41 @@
-import { DataTypes, Model, Sequelize } from "sequelize";
-import db from "../config/sequelize";
+import mongoose, { Model, Schema } from "mongoose";
 
 
-class Review extends Model {
-    declare rating: number;
-    declare comment: string;
-    declare userId: string;
-    declare touristPlaceID: string;
-}
+interface IReview {
+    rating: number;
+    date: Date;
+    userId: string;
+    touristLocationID: mongoose.Types.ObjectId;
+};
 
-Review.init({
+const ReviewSchema = new mongoose.Schema<IReview>({
     rating: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        validate: {
-            min: 1,
-            max: 5,
-        },
+        type: Number,
+        required: true,
+        min: 1,
+        max: 5,
     },
-    comment: {
-        type: DataTypes.TEXT,
-        allowNull: true,
-        validate: {
-            len: [0, 500],
-        },
+    date: {
+        type: Date,
+        required: true,
     },
-    userID: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: 'users',
-            key: 'id',
-        },
-        primaryKey: true,
+    userId: {
+        type: String,
+        required: true,
+        ref: 'User',
     },
-    touristPlaceID: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: 'tourist-places',
-            key: 'id',
-        },
-        primaryKey: true,
+    touristLocationID: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'TouristPlace',
     },
 }, {
-    sequelize: db,
-    tableName: 'reviews',
-})
+    collection: 'reviews',
+    timestamps: false
+});
+
+const ReviewModel: Model<IReview> = mongoose.model<IReview>('Review', ReviewSchema);
 
 
-export default Review;
-export { Review };
+export default ReviewModel;
+export { IReview };

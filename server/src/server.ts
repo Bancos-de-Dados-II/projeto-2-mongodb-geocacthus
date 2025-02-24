@@ -1,10 +1,11 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import sequelize from './config/sequelize';
+import { connectMongoDB } from './config/database';
+import HttpError from './utils/error/httpError';
 import cors from 'cors';
-
 import router, { configIndeceServerPoint } from './routes/router';
 import errorMiddleware from './utils/middlewares/errorMiddleware';
-import sequelize from './config/sequelize';
 
 dotenv.config();
 
@@ -23,6 +24,4 @@ sequelize.sync().then(() => {
     console.log("Database connected successfully");
 })
 
-server.listen(PORT, () => {
-    console.log(`Server is running in http://localhost:${PORT}${indeceServerPoint}\n`);
-})
+connectMongoDB();
