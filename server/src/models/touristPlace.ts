@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 import pointSchema from './point';
 
+
 interface ITouristPlace {
     name: string;
     description: string;

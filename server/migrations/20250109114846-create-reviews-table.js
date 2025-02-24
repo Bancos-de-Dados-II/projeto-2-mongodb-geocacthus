@@ -20,11 +20,6 @@ module.exports = {
           },
           primaryKey: true,
       },
-      date: {
-        type: Sequelize.DATE,
-        allowNull: false,
-        primaryKey: true,
-      },
       rating: {
         type: Sequelize.INTEGER,
         allowNull: false,

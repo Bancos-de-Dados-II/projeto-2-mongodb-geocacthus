@@ -21,13 +21,13 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      image: {
-        type: Sequelize.STRING,
-        allowNull: true
-      },
       phone: {
         type: Sequelize.STRING,
         allowNull: false
+      },
+      location: {
+        type: DataTypes.GEOMETRY("POINT"),
+        allowNull: false,
       },
       createdAt: {
         type: Sequelize.DATE,
