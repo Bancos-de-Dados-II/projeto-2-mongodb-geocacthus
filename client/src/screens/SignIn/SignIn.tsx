@@ -2,15 +2,12 @@ import "./signin.css";
 import { useState, ChangeEvent, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import { login as loginService, LoginData } from "../../service/authService";
 
-interface FormData {
-    email: string;
-    password: string;
-}
 
 function SignIn() {
     const { login } = useAuth();
-    const [formData, setFormData] = useState<FormData>({
+    const [formData, setFormData] = useState<LoginData>({
         email: "",
         password: ""
     });
@@ -26,24 +23,11 @@ function SignIn() {
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            const response = await fetch("http://localhost:3000/api/auth/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(formData)
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || "Authentication failed");
-            }
-
-            const data = await response.json();
+            const data = await loginService(formData);
             localStorage.setItem("authToken", data.token);
+            console.log(data.token);
 
             login();
-
             navigate("/home");
         } catch (error) {
             setErrorMessage((error as Error).message);
