@@ -1,20 +1,18 @@
 import "./signup.css";
 import { useState, ChangeEvent, FormEvent } from "react";
+import { RegisterData, register as registerService } from "../../service/authService";
+import { useNavigate } from "react-router-dom";
 
-interface FormData {
-  name: string;
-  email: string;
-  password: string;
-}
 
 function SignUp() {
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<RegisterData>({
     name: "",
     email: "",
     password: "",
   });
 
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const navigate = useNavigate();
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -30,21 +28,11 @@ function SignUp() {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Registration failed");
-      }
+      await registerService(formData);
 
       alert("User registered successfully!");
       setFormData({ name: "", email: "", password: "" });
+      navigate("/signin");
     } catch (error) {
       setErrorMessage((error as Error).message);
     }
