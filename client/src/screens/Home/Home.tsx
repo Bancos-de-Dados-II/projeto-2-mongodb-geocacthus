@@ -2,9 +2,10 @@ import { useState } from "react"
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet"
 import "./home.css"
 
-import touristServices, { ITouristLocationBase } from "../../service/touristLocation"
+import touristServices, { ITouristLocationBase } from "../../service/touristPlaceService"
 import Header from "../../components/Header/Header";
 import { useFetchOnce } from "../../hooks/useFetchOnce";
+import ReviewList from "../../components/Review/ReviewList";
 
 function Home() {
     const [touristLocations, setTouristLocations] = useState<ITouristLocationBase[]>([]);
@@ -68,10 +69,7 @@ function Home() {
                         )}
                     </div>
                     <div className="camp-reviews">
-                        {/* Listar reviews aqui */}
-                        <p>Campo de reviews em breve</p>
-                        {/* Implementar componente de reviews */}
-                        {/* <ReviewList reviews={reviews} /> */}
+                        {selectedLocation && <ReviewList locationId={selectedLocation.id} />}
                     </div>
                 </div>
             </div>
