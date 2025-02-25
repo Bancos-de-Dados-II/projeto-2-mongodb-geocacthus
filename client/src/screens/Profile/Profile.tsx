@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import "./profile.css";
 
-import touristServices, { IApiResponse, ITouristUpdate } from "../../service/touristLocation";
+import touristServices, { IApiResponse, ITouristUpdate } from "../../service/touristPlaceService";
 import Header from "../../components/Header/Header";
 import { useFetchOnce } from "../../hooks/useFetchOnce";
 

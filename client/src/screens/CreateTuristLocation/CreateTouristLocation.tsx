@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import locationService, { Country, State } from "../../service/locationService";
-import touristServices from "../../service/touristLocation";
+import touristServices from "../../service/touristPlaceService";
 import "./createTouristLocation.css";
 import Header from "../../components/Header/Header";
 import { useFetchOnce } from "../../hooks/useFetchOnce";

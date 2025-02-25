@@ -2,7 +2,7 @@ import axios from "axios";
 import { LatLngTuple } from "leaflet";
 
 export interface IApiResponse {
-    id: string;
+    _id: string;
     name: string;
     description: string;
     category: string;
@@ -19,6 +19,7 @@ export interface IApiResponse {
         coordinates: LatLngTuple;
     };
 }
+
 
 interface ITouristCreate {
     name: string;
@@ -73,7 +74,7 @@ const fetchTouristLocations = async () => {
         dataTouristLocations.length = 0;
 
         const formattedData = data.map(instance => ({
-            id: instance.id,
+            id: instance._id,
             name: instance.name,
             description: instance.description,
             category: instance.category,

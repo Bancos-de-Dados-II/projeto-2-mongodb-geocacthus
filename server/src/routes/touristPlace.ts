@@ -14,6 +14,7 @@ const geocodingService = new GeocodingService();
 router.get("/", async (request: Request, response: Response, next: NextFunction) => {
     try {
         const locations = await touristPlaceService.fetchAllTouristLocations();
+        console.log(locations);
         response.status(200).json(locations);
     } catch (error) {
         next(error);

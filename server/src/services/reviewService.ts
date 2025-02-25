@@ -63,7 +63,7 @@ class ReviewService {
             throw new HttpError("Review não encontrado.", 404);
         }
 
-        if (review.userId !== userID) {
+        if (review.userID !== userID) {
             throw new HttpError("Você não tem permissão para deletar este review.", 403);
         }
 

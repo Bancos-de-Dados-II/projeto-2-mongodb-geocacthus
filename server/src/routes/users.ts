@@ -53,7 +53,7 @@ router.get("/tourist-places/my-places", authenticateToken, async (request: Reque
             throw new HttpError("Usuário não autenticado.", 404);
         }
 
-        const userPlaces = await touristPlaceService.fetchTouristLocationsByUser(userAuth.id);
+        const userPlaces = await touristPlaceService.fetchTouristLocationById(userAuth.id);
 
         response.status(200).json(userPlaces);
     } catch (error) {
