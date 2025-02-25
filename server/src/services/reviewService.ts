@@ -1,21 +1,21 @@
-import { ModelStatic } from "sequelize";
-import Review from "../models/review";
+import { Model } from "mongoose";
+import Review, { IReview } from "../models/review";
 import HttpError from "../utils/error/httpError";
-import TouristPlace from "../models/touristPlace";
+import TouristPlace, { ITouristPlace } from "../models/touristPlace";
 
 class ReviewService {
-    private reviewModel: ModelStatic<Review>;
-    private placeModel: ModelStatic<TouristPlace>;
+    private reviewModel: Model<IReview>;
+    private placeModel: Model<ITouristPlace>;
 
-    constructor(reviewModel: ModelStatic<Review>, placeModel: ModelStatic<TouristPlace>) {
+    constructor(reviewModel: Model<IReview>, placeModel: Model<ITouristPlace>) {
         this.reviewModel = reviewModel;
         this.placeModel = placeModel
     };
 
-    async createReview(userID: string, touristPlaceID: string, data: Partial<Review>) {
+    async createReview(userID: string, touristPlaceID: string, data: Partial<IReview>) {
         console.log(userID, touristPlaceID, data);
 
-        const touristPlace = await this.placeModel.findByPk(touristPlaceID);
+        const touristPlace = await this.placeModel.findById(touristPlaceID);
         if (!touristPlace) {
             throw new HttpError("Lugar turístico não encontrado.", 404);
         }
@@ -35,10 +35,7 @@ class ReviewService {
     }
 
     async getReviewsForPlace(touristPlaceID: string) {
-        const reviews = await Review.findAll({
-            where: { touristPlaceID },
-            order: [["createdAt", "DESC"]],
-        });
+        const reviews = await this.reviewModel.find({ touristPlaceID }).sort({ createdAt: -1 });
 
         if (!reviews || reviews.length === 0) {
             throw new HttpError("Nenhum review encontrado para este lugar turístico.", 404);
@@ -48,7 +45,9 @@ class ReviewService {
     }
 
     async getReviewById(reviewID: string) {
-        const review = await Review.findByPk(reviewID);
+        const review = await Review.findById(reviewID)
+            .populate('touristPlaceID')
+            .exec();
 
         if (!review) {
             throw new HttpError("Review não encontrado.", 404);
@@ -58,7 +57,7 @@ class ReviewService {
     }
 
     async deleteReview(reviewID: string, userID: string) {
-        const review = await Review.findByPk(reviewID);
+        const review = await Review.findByIdAndDelete(reviewID).exec();
 
         if (!review) {
             throw new HttpError("Review não encontrado.", 404);
@@ -68,7 +67,6 @@ class ReviewService {
             throw new HttpError("Você não tem permissão para deletar este review.", 403);
         }
 
-        await review.destroy();
         return review;
     }
 }

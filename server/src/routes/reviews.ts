@@ -1,24 +1,26 @@
 import { NextFunction, Router, Request, Response } from "express";
 import authenticateToken from "../utils/middlewares/authenticateToken";
 import ReviewService from "../services/reviewService";
-import Review from "../models/review";
+import ReviewModel from "../models/review";
 import TouristPlace from "../models/touristPlace";
 import HttpError from "../utils/error/httpError";
 
 const router = Router();
-const reviewService = new ReviewService(Review, TouristPlace);
+const reviewService = new ReviewService(ReviewModel, TouristPlace);
 
 
 
 router.post("/:placeID", authenticateToken, async(request: Request, response: Response, next: NextFunction) => {
     const { placeID } = request.params;
     const data = request.body;
+    console.log(placeID, data);
 
     if (!request.user) {
         throw new HttpError("Usuário não autenticado.", 401)
     }
 
     const userID = request.user.id;
+    console.log(userID);
 
     try {
         const review = await reviewService.createReview(userID, placeID, data);

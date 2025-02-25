@@ -4,6 +4,7 @@ import authRouter from "./authentication";
 import userRouter from "./users";
 import touristPlaceRouter from "./touristPlace";
 import reviewRouter from "./reviews";
+import fileRouter from "./file";
 
 let apiRoute: string;
 export const configIndeceServerPoint = (indecePoint: string) => {
@@ -16,7 +17,8 @@ const indceRouter = {
     users: '/users',
     tourist_places: '/tourist-place',   
     hours: '/hours',
-    reviews: '/reviews'
+    reviews: '/reviews',
+    files: '/files'
 };
 
 const router = Router();
@@ -36,5 +38,6 @@ router.use(`${indceRouter.auth}`, authRouter);
 router.use(`${indceRouter.users}`, userRouter);
 router.use(`${indceRouter.tourist_places}`, touristPlaceRouter);
 router.use(`${indceRouter.reviews}`, reviewRouter);
+router.use(`${indceRouter.files}`, fileRouter);
 
 export default router;
