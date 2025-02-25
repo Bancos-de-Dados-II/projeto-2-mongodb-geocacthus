@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getReviews } from '../../service/reviewService';
 import { IUser, getUserById } from '../../service/userService';
+import "./ReviewList.css"
 
 
 interface IReview {
@@ -51,9 +52,13 @@ const ReviewList: React.FC<{ locationId: string }> = ({ locationId }) => {
         <div>
             <h3>Avaliações</h3>
             {reviews.length > 0 ? (
-                <ul>
+                <ul className="review-list">
                     {reviews.map((review) => (
-                        <li key={review._id}>
+                        <li className="review-item" key={review._id}>
+                            { /*<img src={users[review.userID]?.image || 'default-profile.png'} alt={users[review.userID]?.name || 'Usuário'} /> */}
+                            <div className="review-content">
+                                <div className="review-author"></div>
+                            </div>
                             <strong>{users[review.userID]?.name || 'Usuário desconhecido'}</strong>: {review.comment} ({review.rating}/5)
                         </li>
                     ))}
