@@ -3,9 +3,9 @@ import mongoose, { Model, Schema } from "mongoose";
 
 interface IReview {
     rating: number;
-    date: Date;
-    userId: string;
-    touristLocationID: mongoose.Types.ObjectId;
+    comment: string;
+    userID: string;
+    touristPlaceID: mongoose.Types.ObjectId;
 };
 
 const ReviewSchema = new mongoose.Schema<IReview>({
@@ -15,23 +15,23 @@ const ReviewSchema = new mongoose.Schema<IReview>({
         min: 1,
         max: 5,
     },
-    date: {
-        type: Date,
+    comment: {
+        type: String,
         required: true,
     },
-    userId: {
+    userID: {
         type: String,
         required: true,
         ref: 'User',
     },
-    touristLocationID: {
+    touristPlaceID: {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: 'TouristPlace',
+        ref: 'touristPlaces',
     },
 }, {
     collection: 'reviews',
-    timestamps: false
+    timestamps: true
 });
 
 const ReviewModel: Model<IReview> = mongoose.model<IReview>('Review', ReviewSchema);
