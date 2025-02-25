@@ -10,9 +10,7 @@ class TouristPlaceService {
     }
 
     async fetchAllTouristLocations() {
-        return await this.touristPlaceModel.find()
-            .populate('evaluationsLocations openingHours')
-            .exec();
+        return await this.touristPlaceModel.find();
     }
     
     async fetchTouristLocationById(id: string) {

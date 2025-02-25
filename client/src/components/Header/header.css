@@ -1,0 +1,48 @@
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: #007bff;
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.header-logo h1 {
+    font-size: 1.8rem;
+    margin: 0;
+    color: white;
+}
+
+.header-logo a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.header-nav ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.header-nav ul li {
+    margin-left: 20px;
+}
+
+.header-nav ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 1rem;
+    transition: color 0.3s;
+}
+
+.header-nav ul li a:hover {
+    color: #ffdd57;
+}
+
+.logout-link {
+    cursor: pointer;
+    color: white;
+    text-decoration: none;
+}

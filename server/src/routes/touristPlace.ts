@@ -2,9 +2,13 @@ import { NextFunction, Request, Response, Router } from "express";
 import TouristPlaceService from "../services/touristPlaceService";
 import TouristPlace from "../models/touristPlace";
 import authenticateToken from "../utils/middlewares/authenticateToken";
+import GeocodingService from "../services/GeocodingService";
+import HttpError from "../utils/error/httpError";
 
 const router = Router();
 const touristPlaceService = new TouristPlaceService(TouristPlace);
+const geocodingService = new GeocodingService();
+ 
 
 
 router.get("/", async (request: Request, response: Response, next: NextFunction) => {
@@ -31,7 +35,7 @@ router.post("/", authenticateToken, async (request: Request, response: Response,
         const userAuth = request.user;
         console.log(userAuth);
         if (!userAuth) {
-            throw new Error("Usuário não encontrado.");
+            throw new Error("Usuário não autenticado.");
         }
 
         const { latitude, longitude, ...data } = request.body;
@@ -49,6 +53,7 @@ router.post("/", authenticateToken, async (request: Request, response: Response,
         };
 
         const newLocation = await touristPlaceService.createTouristLocation(locationData, userAuth);
+      
         response.status(201).json(newLocation);
     } catch (error) {
         next(error);

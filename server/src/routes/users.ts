@@ -4,9 +4,13 @@ import UserService from "../services/userService";
 import User from "../models/user";
 import authenticateToken from "../utils/middlewares/authenticateToken";
 import HttpError from "../utils/error/httpError";
+import TouristPlaceService from "../services/touristPlaceService";
+import TouristPlace from "../models/touristPlace";
 
 const router = Router();
 const userService = new UserService(User);
+const touristPlaceService = new TouristPlaceService(TouristPlace);
+
 
 router.get("/", async (request: Request, response: Response) => {
     try {
@@ -41,6 +45,22 @@ router.get("/:id", async (request: Request, response: Response) => {
         response.status(500).json({ message: 'Erro ao buscar usuário.', error: 'Erro desconhecido' });
     }
 });
+
+router.get("/tourist-places/my-places", authenticateToken, async (request: Request, response: Response, next: NextFunction) => {
+    try {
+        const userAuth = request.user;
+        if (!userAuth) {
+            throw new HttpError("Usuário não autenticado.", 404);
+        }
+
+        const userPlaces = await touristPlaceService.fetchTouristLocationsByUser(userAuth.id);
+
+        response.status(200).json(userPlaces);
+    } catch (error) {
+        next(error);
+    }
+});
+
 
 router.delete('/', authenticateToken, async (request: Request, response: Response, next: Function) => {
     try {
