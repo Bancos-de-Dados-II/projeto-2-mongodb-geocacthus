@@ -96,6 +96,8 @@ function SignUp() {
           </p>
         </div>
       </div>
+      <div className="content-section-graph">   
+      </div>
     </div>
   );
 }

@@ -4,52 +4,62 @@
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #f3f4f6;
-}
+    background: rgb(255, 255, 255);
+    background: linear-gradient(188deg, rgba(255, 255, 255, 1) 0%, rgba(52, 224, 161, 1) 76%, rgba(255, 255, 255, 1) 100%, rgba(2, 0, 36, 1) 100%);
+    font-family: Arial, sans-serif;
+    padding: 0 5rem;
 
-.content-section-form, .content-section-graph {
-    width: 630px;
-    height: 700px;
-}
+    & .content-section-form,
+    .content-section-graph {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100%;
+        min-width: 50%;
+        width: 500px;
+        height: 650px;
+        /* padding: 2rem 0; */
+    }
 
-.content-section-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: #ffffff;
-}
+    & .content-section-form {
+        background-color: #ffffff;
+    }
 
-.content-section-graph {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: #00067C;
-    color: #ffffff;
-}
+    & .content-section-graph {
+        background-color: rgba(52, 224, 161, 1);
+        color: #ffffff;
+        /* padding-left: -1rem; */
+    }
 
+    & .form-group input {
+        /* width: 100%; */
+        padding: 10px;
+        border: 1px solid #cccccc;
+        border-radius: 4px;
+        font-size: 1rem;
+        background-color: #f9f9f9;
+        transition: border-color 0.3s ease;
+    }
 
+    & .form-group {
+        display: flex;
+        flex-direction: column;
+        margin: 36px 0;
+    }
 
+    & #form-group-button {
+        margin-top: 54px;
+    }
 
-.form-group {
-    display: flex;
-    flex-direction: column;
-    margin: 36px 0;
-}
+    & .section-logo {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
 
-#form-group-button {
-    margin-top: 54px; 
-}
-
-
-
-.section-logo {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-}
-.section-logo img {
-    width: 70%;
+    & .section-logo img {
+        width: 70%;
+    }
 }
