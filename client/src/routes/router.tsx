@@ -6,6 +6,8 @@ import Home from "../screens/Home/Home";
 import CreateTouristLocation from "../screens/CreateTuristLocation/CreateTouristLocation";
 import Profile from "../screens/Profile/Profile";
 
+import LadingPage from "../screens/LadingPage/LadingPage";
+
 import ProtectedRoute from "../components/ProtectedRoute";
 
 const AppRoutes = () => {
@@ -23,6 +25,14 @@ const AppRoutes = () => {
             <Route
                 path="/signup"
                 element={<SignUp />}
+            />
+            <Route 
+                path="/start"
+                element={
+                    <ProtectedRoute>
+                        <LadingPage />
+                    </ProtectedRoute>
+                }
             />
             <Route
                 path="/home"
