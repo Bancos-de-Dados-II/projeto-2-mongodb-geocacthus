@@ -9,5 +9,19 @@
     padding: 20px;
     box-sizing: border-box;
     border-radius: 8px;
+
+    & .sectionBanner {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(52,224,161,1);
+        flex: 1;
+        width: 50%;
+        height: 100%;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
 }
 

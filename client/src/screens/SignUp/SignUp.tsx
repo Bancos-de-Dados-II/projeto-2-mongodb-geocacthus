@@ -97,7 +97,7 @@ function SignUp() {
                         <p>Already have an account? <a href="/signin" className={stylesSigup.signInLink}>Sign In</a></p>
                     </div>
                 </div>
-                <div className={styles.sectionBanner}>
+                <div className={stylesSigup.sectionBanner}>
                     <img src={Logo} alt="Logo" className={styles.Banner} />
                 </div>
             </div>
