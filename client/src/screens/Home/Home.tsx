@@ -24,19 +24,44 @@ function Home() {
         <div className="home-container">
             <Header />
             <div className="content-main">
+                <div className="box-info">
+                    {selectedLocation ? (
+                        <div className="info-card">
+                            <h2 className="location-title">{selectedLocation.name}</h2>
+
+                            <div className="image-container">
+                                <img src={selectedLocation.image} alt={selectedLocation.name} />
+                            </div>
+                            
+                            <p className="location-description">{selectedLocation.description}</p>
+
+                            <div className="extra-details">
+                                <p><strong>Telefone:</strong> {selectedLocation.phone}</p>
+                            </div>
+
+                            <div className="camp-reviews">
+                                <h3>Reviews</h3>
+                                <ReviewList locationId={selectedLocation.id} />
+                            </div>
+                        </div>
+                    ) : (
+                        <h2>Seja bem-vindo ao nosso site de turismo!</h2>
+                    )}
+                </div>
+
                 <div className="box-map">
                     <MapContainer
                         center={[-7.135, -34.876]}
                         zoom={13}
-                        style={{ height: "815px", width: "100%" }}
+                        style={{ height: "100%", width: "100%" }}
                     >
                         <TileLayer
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         />
                         {touristLocations.map((location) => (
-                            <Marker 
-                                key={location.id} 
+                            <Marker
+                                key={location.id}
                                 position={location.position}
                                 eventHandlers={{
                                     click: () => {
@@ -52,25 +77,6 @@ function Home() {
                             </Marker>
                         ))}
                     </MapContainer>
-                </div>
-                <div className="box-info">
-                    <div className="camp-info">
-                        {selectedLocation ? (
-                            <div>
-                                <img src={selectedLocation!.image} alt="" />
-                                <h3>{selectedLocation.name}</h3>     
-                                <h5>{selectedLocation.position}</h5> 
-                                <p>Telefone: {selectedLocation!.phone}</p>
-                                <p>{selectedLocation.description}</p> 
-                                <p></p>
-                            </div>
-                        ) : (
-                            <p>Selecionar um ponto para ver detalhes.</p>
-                        )}
-                    </div>
-                    <div className="camp-reviews">
-                        {selectedLocation && <ReviewList locationId={selectedLocation.id} />}
-                    </div>
                 </div>
             </div>
         </div>

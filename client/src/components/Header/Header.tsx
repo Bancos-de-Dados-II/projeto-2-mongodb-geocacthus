@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import "./header.css";
+import ModalCreateLocation from "../ModalCreateLocation/ModalCreateLocation";
+
 
 function Header() {
     const { logout } = useAuth();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -23,7 +26,7 @@ function Header() {
         <header className="main-header">
             <div className="header-logo">
                 <Link to="/home">
-                    {isLoggedIn ? ( 
+                    {isLoggedIn ? (
                         <h1>Agent Map</h1>
                     ) : (
                         <h1>Tourist Map</h1>
@@ -37,8 +40,8 @@ function Header() {
                     </li>
                     {isLoggedIn ? (
                         <>
-                            <li>
-                                <Link to="/create/tourist-place">Create Tourist Location</Link>
+                            <li onClick={() => setIsModalOpen(true)}>
+                                Create Tourist Location
                             </li>
                             <li>
                                 <Link to="/profile">Profile</Link>
@@ -54,6 +57,8 @@ function Header() {
                     )}
                 </ul>
             </nav>
+
+            <ModalCreateLocation isOpen={isModalOpen} onClose={setIsModalOpen} />
         </header>
     );
 }
