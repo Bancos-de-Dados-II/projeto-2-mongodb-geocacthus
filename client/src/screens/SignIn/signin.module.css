@@ -1,5 +1,5 @@
 /* Estilização para o container principal */
-.container-signin {
+.containerSignin {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -7,39 +7,76 @@
     background: rgb(255,255,255);
     background: linear-gradient(188deg, rgba(255,255,255,1) 0%, rgba(52,224,161,1) 76%, rgba(255,255,255,1) 100%, rgba(2,0,36,1) 100%);
     font-family: Arial, sans-serif;
+    padding: 20px;
+    box-sizing: border-box;
+    border-radius: 8px;
 }
 
 /* Estilização da seção principal do formulário */
-.content-section-form {
+.contentSectionForm {
     display: flex;
+    flex-direction: row;
     background: #ffffff;
-    border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     min-width: 85%;
-    height: 85%;
+    height: 90%;
+    border-radius: 8px;
+}
+
+.sectionBanner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(52,224,161,1);
+    flex: 1;
+    width: 50%;
+    height: 100%;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.Banner {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.sectionForm {
+    width: 50%;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Título da seção */
-.section-title h1 {
+.formTitle {
     font-size: 2rem;
     color: #333333;
     text-align: center;
     margin-bottom: 20px;
 }
 
+form {
+    display: flex;
+    flex-direction: column;
+    width: 70%; /* Ajusta a largura do formulário */
+}
+
 /* Estilização dos grupos de formulário */
-.form-group {
+.formGroup {
+    width: 100%;
     margin-bottom: 20px;
 }
 
-.form-group label {
+.formGroup label {
     display: block;
     font-size: 0.9rem;
     color: #555555;
     margin-bottom: 8px;
 }
 
-.form-group input {
+.formGroup input {
     width: 100%;
     padding: 10px;
     border: 1px solid #cccccc;
@@ -47,10 +84,11 @@
     font-size: 1rem;
     background-color: #f9f9f9;
     transition: border-color 0.3s ease;
+    box-sizing: border-box; /* Garante que padding e bordas sejam incluídos na largura */
 }
 
-.form-group input:focus {
-    border-color: #007bff;
+.formGroup input:focus {
+    border-color: rgba(52,224,161,1);
     outline: none;
     background-color: #ffffff;
 }
@@ -61,7 +99,7 @@ button[type="submit"] {
     padding: 12px;
     font-size: 1rem;
     color: #ffffff;
-    background-color: #007bff;
+    background-color: rgba(52,224,161,1);
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -69,34 +107,36 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-    background-color: #0056b3;
+    background-color: rgb(50, 193, 140);
 }
 
 /* Mensagem de erro */
-.error-message {
+.errorMessage {
     margin-top: 15px;
     padding: 10px;
     background-color: #ffe4e6;
     color: #d32f2f;
     border-radius: 4px;
     text-align: center;
+    width: 100%;
+    box-sizing: border-box; /* Garante que padding e bordas sejam incluídos na largura */
 }
 
 /* Ação para criar conta */
-.section-action-account {
+.sectionActionAccount {
     text-align: center;
     margin-top: 20px;
     font-size: 0.9rem;
     color: #555555;
 }
 
-.section-action-account a {
-    color: #007bff;
+.sectionActionAccount a {
+    color: rgba(52,224,161,1);
     text-decoration: none;
     font-weight: bold;
     transition: color 0.3s ease;
 }
 
-.section-action-account a:hover {
-    color: #0056b3;
+.sectionActionAccount a:hover {
+    color: rgb(50, 193, 140);
 }
