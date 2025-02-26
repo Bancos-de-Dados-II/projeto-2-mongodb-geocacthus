@@ -1,0 +1,13 @@
+.containerSignup {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: rgb(255, 255, 255);
+    background: linear-gradient(188deg, rgba(255, 255, 255, 1) 0%, rgba(52, 224, 161, 1) 76%, rgba(255, 255, 255, 1) 100%, rgba(2, 0, 36, 1) 100%);
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    box-sizing: border-box;
+    border-radius: 8px;
+}
+
