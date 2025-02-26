@@ -73,7 +73,7 @@ form {
     gap: 0.8rem;
 }
 
-.formGroup svg {
+.iconsForm {
     position: absolute;
     width: 24px;
     right: 24px;
