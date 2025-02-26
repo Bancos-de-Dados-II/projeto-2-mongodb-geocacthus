@@ -1,8 +1,9 @@
-import "./signin.css";
+import styles from "./signin.module.css";
 import { useState, ChangeEvent, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { login as loginService, LoginData } from "../../service/authService";
+import Logo from "../../../public/banner-sign.svg";
 
 
 function SignIn() {
@@ -35,14 +36,15 @@ function SignIn() {
     };
 
     return (
-        <div className="container-signin">
-            <div className="content-section-form">
-                <div className="section-title">
-                    <h1>Welcome</h1>
+        <div className={styles.containerSignin}>
+            <div className={styles.contentSectionForm}>
+                <div className={styles.sectionBanner}>
+                    <img src={Logo} alt="Logo" className={styles.Banner} /> {/* Usando a imagem SVG */}
                 </div>
-                <div className="section-form">
+                <div className={styles.sectionForm}>
+                    <h2 className={styles.formTitle}>Sign In</h2>
                     <form onSubmit={handleSubmit}>
-                        <div className="form-group">
+                        <div className={styles.formGroup}>
                             <label htmlFor="signin-email">E-mail</label>
                             <input
                                 id="signin-email"
@@ -54,7 +56,7 @@ function SignIn() {
                                 onChange={handleInputChange}
                             />
                         </div>
-                        <div className="form-group">
+                        <div className={styles.formGroup}>
                             <label htmlFor="signin-password">Password</label>
                             <input
                                 id="signin-password"
@@ -66,16 +68,16 @@ function SignIn() {
                                 onChange={handleInputChange}
                             />
                         </div>
-                        <button type="submit">Enter</button>
+                        <button type="submit" className={styles.submitButton}>Enter</button>
                     </form>
                     {errorMessage && (
-                        <div className="error-message">
+                        <div className={styles.errorMessage}>
                             <p>{errorMessage}</p>
                         </div>
                     )}
-                </div>
-                <div className="section-action-account">
-                    <p>Don't have an account? <a href="/signup">Sign Up</a></p>
+                    <div className={styles.sectionActionAccount}>
+                        <p>Don't have an account? <a href="/signup" className={styles.signUpLink}>Sign Up</a></p>
+                    </div>
                 </div>
             </div>
         </div>
