@@ -5,6 +5,10 @@ import { useState, ChangeEvent, FormEvent } from "react";
 import { RegisterData, register as registerService } from "../../service/authService";
 import { useNavigate } from "react-router-dom";
 
+import UserIcon from "../../../public/user-icon.svg";
+import EmailIcon from "../../../public/email-icon.svg";
+import PasswordIcon from "../../../public/password-icon.svg";
+
 
 function SignUp() {
     const [formData, setFormData] = useState<RegisterData>({
@@ -47,7 +51,7 @@ function SignUp() {
                     <h2 className={styles.formTitle}>Sign Up</h2>
                     <form onSubmit={handleSubmit}>
                         <div className={styles.formGroup}>
-                            <label htmlFor="name">Name</label>
+                            <img src={UserIcon} alt="User icon" className={styles.iconsForm}/>
                             <input
                                 id="signup-name"
                                 type="text"
@@ -59,7 +63,7 @@ function SignUp() {
                             />
                         </div>
                         <div className={styles.formGroup}>
-                            <label htmlFor="email">E-mail</label>
+                            <img src={EmailIcon} alt="Email icon" className={styles.iconsForm}/>
                             <input
                                 id="signup-email"
                                 type="email"
@@ -71,7 +75,7 @@ function SignUp() {
                             />
                         </div>
                         <div className={styles.formGroup}>
-                            <label htmlFor="password">Password</label>
+                            <img src={PasswordIcon} alt="Password icon" className={styles.iconsForm}/>
                             <input
                                 id="signup-password"
                                 type="password"
@@ -82,7 +86,7 @@ function SignUp() {
                                 required
                             />
                         </div>
-                        <button type="submit">Sign Up</button>
+                        <button type="submit">Finish</button>
                     </form>
                     {errorMessage && (
                         <div className={styles.errorMessage}>
@@ -93,7 +97,7 @@ function SignUp() {
                         <p>Already have an account? <a href="/signin" className={stylesSigup.signInLink}>Sign In</a></p>
                     </div>
                 </div>
-                <div className={styles.sectionBanner}>
+                <div className={stylesSigup.sectionBanner}>
                     <img src={Logo} alt="Logo" className={styles.Banner} />
                 </div>
             </div>

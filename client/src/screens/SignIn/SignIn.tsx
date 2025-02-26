@@ -5,6 +5,9 @@ import { useAuth } from "../../hooks/useAuth";
 import { login as loginService, LoginData } from "../../service/authService";
 import Logo from "../../../public/banner-sign.svg";
 
+import EmailIcon from "../../../public/email-icon.svg";
+import PasswordIcon from "../../../public/password-icon.svg";
+
 
 function SignIn() {
     const { login } = useAuth();
@@ -45,7 +48,7 @@ function SignIn() {
                     <h2 className={styles.formTitle}>Sign In</h2>
                     <form onSubmit={handleSubmit}>
                         <div className={styles.formGroup}>
-                            <label htmlFor="signin-email">E-mail</label>
+                            <img src={EmailIcon} alt="Email icon" className={styles.iconsForm}/>
                             <input
                                 id="signin-email"
                                 type="text"
@@ -57,7 +60,7 @@ function SignIn() {
                             />
                         </div>
                         <div className={styles.formGroup}>
-                            <label htmlFor="signin-password">Password</label>
+                            <img src={PasswordIcon} alt="Password icon" className={styles.iconsForm}/>
                             <input
                                 id="signin-password"
                                 type="password"
