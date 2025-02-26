@@ -1,0 +1,44 @@
+.containerLading {
+    display: flex;
+    flex-direction: column;
+
+    & .main {
+        display: flex;
+
+        & section {
+            flex: 1;
+            margin: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            & .contentStart {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+            }
+
+            & .contentCarousel {
+                display: flex;
+                flex-direction: column;
+            }
+
+            & .contentInfo {
+                display: flex;
+                flex-direction: column;
+                /* align-items: center;
+                justify-content: center; */
+            }
+
+            & .contentContact {
+                display: flex;
+                flex-direction: column;
+                /* align-items: center;
+                justify-content: center; */
+            }
+        }
+    }
+    
+}
