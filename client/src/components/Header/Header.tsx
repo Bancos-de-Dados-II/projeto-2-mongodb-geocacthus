@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import "./header.css";
-import ModalCreateLocation from "../ModalCreateLocation/ModalCreateLocation";
+import ModalCreateLocation from "../Modal/ModalCreateLocation/ModalCreateLocation";
 
 
 function Header() {

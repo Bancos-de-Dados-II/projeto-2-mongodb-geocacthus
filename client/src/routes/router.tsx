@@ -33,14 +33,6 @@ const AppRoutes = () => {
                 }
             />
             <Route
-                path="/create/tourist-place"
-                element={
-                    <ProtectedRoute>
-                        <CreateTouristLocation />
-                    </ProtectedRoute>
-                }
-            />
-            <Route
                 path="/profile"
                 element={
                     <ProtectedRoute>

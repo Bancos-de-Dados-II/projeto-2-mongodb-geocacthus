@@ -82,8 +82,7 @@ form {
     top: 10px
 }
 
-.formGroup input, 
-button {
+.formGroup input {
     padding: .8rem 0;
     font-size: .9rem;
     border-radius: 2rem;
@@ -102,7 +101,7 @@ button {
     border: 1px solid #cccccc;
     background-color: #f9f9f9;
     transition: border-color 0.3s ease;
-    box-sizing: border-box; /* Garante que padding e bordas sejam incluídos na largura */
+    box-sizing: border-box;
 }
 
 .formGroup input:focus {
@@ -120,13 +119,15 @@ button[type="submit"] {
     border: none;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    padding: .8rem 0;
+    font-size: .9rem;
+    border-radius: 2rem;
 }
 
 button[type="submit"]:hover {
     background-color: rgb(50, 193, 140);
 }
 
-/* Mensagem de erro */
 .errorMessage {
     margin-top: 15px;
     padding: 10px;
@@ -135,10 +136,9 @@ button[type="submit"]:hover {
     border-radius: 4px;
     text-align: center;
     width: 100%;
-    box-sizing: border-box; /* Garante que padding e bordas sejam incluídos na largura */
+    box-sizing: border-box;
 }
 
-/* Ação para criar conta */
 .sectionActionAccount {
     text-align: center;
     margin-top: 20px;

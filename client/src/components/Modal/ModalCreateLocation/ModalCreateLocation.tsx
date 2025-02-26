@@ -1,15 +1,15 @@
+import "../CreateTouristPlace.css";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import locationService, { Country, State } from "../../service/locationService";
-import touristServices from "../../service/touristPlaceService";
-import "../../screens/CreateTuristLocation/createTouristLocation.css";
-import { useFetchOnce } from "../../hooks/useFetchOnce";
-import FormField from "../../components/FormField/FormField";
-import FormSelect from "../../components/FormSelect/FormSelect";
-import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from "../../components/ui/dialog";
-import { Button } from "../ui/button";
+import locationService, { Country, State } from "../../../service/locationService";
+import touristServices from "../../../service/touristPlaceService";
+import { useFetchOnce } from "../../../hooks/useFetchOnce";
+import FormField from "../../FormField/FormField";
+import FormSelect from "../../FormSelect/FormSelect";
+import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from "../../ui/dialog";
+import { Button } from "../../ui/button";
 import { PhotoIcon } from "@heroicons/react/24/solid";
-import ModalUploadImage from "../Modal/ModalUploadImage/ModalUploadImage";
+import ModalUploadImage from "../ModalUploadImage/ModalUploadImage";
 
 
 interface Address {
