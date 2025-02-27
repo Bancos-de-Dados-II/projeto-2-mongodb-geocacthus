@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import "./header.css";
 import ModalCreateLocation from "../Modal/ModalCreateLocation/ModalCreateLocation";
@@ -10,17 +10,20 @@ function Header() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         const userToken = localStorage.getItem("authToken"); // Certifique-se de que o nome da chave está correto
         setIsLoggedIn(!!userToken);
     }, []);
 
-    const handleLogout = () => {
+    const handleLogout = () => {    
         logout();
         setIsLoggedIn(false); // Atualiza o estado
         navigate("/home"); // Redireciona para a página inicial
     };
+
+    const isActivate = (path: string) => location.pathname === path;
 
     return (
         <header className="main-header">
@@ -36,7 +39,7 @@ function Header() {
             <nav className="header-nav">
                 <ul>
                     <li>
-                        <Link to="/home">Home</Link>
+                        <Link to="/home" className={isActivate("/home") ? "active-link" : ""}>Home</Link>
                     </li>
                     {isLoggedIn ? (
                         <>
@@ -44,7 +47,7 @@ function Header() {
                                 Create Tourist Location
                             </li>
                             <li>
-                                <Link to="/profile">Profile</Link>
+                                <Link to="/profile" className={isActivate("/profile") ? "active-link" : ""}>Profile</Link>
                             </li>
                             <li onClick={handleLogout} className="logout-link">
                                 Logout
@@ -52,13 +55,14 @@ function Header() {
                         </>
                     ) : (
                         <li>
-                            <Link to="/signin">Login</Link>
+                            <Link to="/signin" className={isActivate("/signin") ? "active-link" : ""}>Login</Link>
                         </li>
                     )}
                 </ul>
             </nav>
 
             <ModalCreateLocation isOpen={isModalOpen} onClose={setIsModalOpen} />
+            {/* <ModalCreateLocation isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} /> */}
         </header>
     );
 }
