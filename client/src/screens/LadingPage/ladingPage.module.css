@@ -4,14 +4,16 @@
 
     & .main {
         display: flex;
+        flex-direction: column;
 
         & section {
             flex: 1;
-            margin: 2rem;
+            padding: 2rem;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            min-height: 80vh;
 
             & .contentStart {
                 display: flex;
