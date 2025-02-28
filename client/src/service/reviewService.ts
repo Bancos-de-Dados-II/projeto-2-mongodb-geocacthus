@@ -8,7 +8,8 @@ interface ReviewDTO {
 };
 
 const createReview = async (review: ReviewDTO) => {
-    const response = await fetch(`${apiConfig.baseUrl}/review`, {
+    console.log(review);
+    const response = await fetch(`${apiConfig.baseUrl}/reviews/${review.touristPlaceID}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

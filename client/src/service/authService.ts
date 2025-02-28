@@ -1,4 +1,5 @@
 import { apiConfig } from "../config/api";
+import { IUser } from "./userService";
 
 
 interface LoginData {
@@ -16,6 +17,7 @@ interface RegisterData {
 interface LoginResponse {
     message: string;
     token: string;
+    user: IUser
 }
 
 const login = async (formData: LoginData): Promise<LoginResponse> => {
