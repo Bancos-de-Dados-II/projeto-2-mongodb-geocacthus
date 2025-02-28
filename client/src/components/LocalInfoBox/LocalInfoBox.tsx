@@ -4,9 +4,13 @@ import { Button } from '../ui/button';
 import { Separator } from '../ui/separator';
 import ReviewList from '../Review/ReviewList';
 import { useState } from 'react';
+import ReviewModal from '../Review/ReviewModal';
+import { createReview } from '../../service/reviewService';
+
 
 const LocationInfoBox = ({ selectedLocation }) => {
     const [selectedImage, setSelectedImage] = useState(null);
+    const [reviewModalOpen, setReviewModalOpen] = useState(false);
 
     const openImageModal = (imageUrl) => {
         setSelectedImage(imageUrl);
@@ -14,6 +18,27 @@ const LocationInfoBox = ({ selectedLocation }) => {
 
     const closeImageModal = () => {
         setSelectedImage(null);
+    };
+
+    const handleReviewSubmit = async (review) => {
+        try {
+            const userData = JSON.parse(localStorage.getItem("user") ?? "{}");
+            const userID = userData ? userData.id : null;
+
+            if (!userID) {
+                throw new Error("Usuário não autenticado");
+            }
+
+            const newReview = await createReview({
+                rating: review.rating,
+                comment: review.comment,
+                userID: userID,
+                touristPlaceID: selectedLocation.id
+            });
+            console.log("Avaliação salva com sucesso:", newReview);
+        } catch (error) {
+            console.error("Erro ao salvar avaliação:", error.message);
+        }
     };
 
     return (
@@ -55,19 +80,26 @@ const LocationInfoBox = ({ selectedLocation }) => {
                                     />
                                 ))}
                             </div>
+
+                            <Separator className="my-6" />
                         </CardContent>
                     )}
-
-                    <Separator className="my-6" />
 
                     <CardContent>
                         <h3 className="font-semibold text-lg mb-6">Avaliações</h3>
                         <ReviewList locationId={selectedLocation.id} />
-                    </CardContent>
+                        <div className="flex justify-center mt-4">
+                            <Button variant="default" onClick={() => setReviewModalOpen(true)}>
+                                Adicionar Avaliação
+                            </Button>
+                        </div>
 
-                    <CardFooter className="flex flex-col gap-4">
-                        <Button variant="outline" className="ml-auto w-full">Ver mais detalhes</Button>
-                    </CardFooter>
+                        <ReviewModal
+                            open={reviewModalOpen}
+                            onOpenChange={setReviewModalOpen}
+                            onSubmit={handleReviewSubmit}
+                        />
+                    </CardContent>
                 </>
             ) : (
                 <div className="flex flex-col justify-center items-center p-8 text-center">
