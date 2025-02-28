@@ -29,9 +29,10 @@ function SignIn() {
         try {
             const data = await loginService(formData);
             localStorage.setItem("authToken", data.token);
+            localStorage.setItem("user", JSON.stringify(data.user));
             console.log(data.token);
 
-            login();
+            login(data.user, data.token);
             navigate("/home");
         } catch (error) {
             setErrorMessage((error as Error).message);
