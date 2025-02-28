@@ -72,7 +72,7 @@ class AuthService {
                 { expiresIn: "1h" }
             );
 
-            return token;
+            return { token, user};
         } catch (error) {
             if (error instanceof HttpError) {
                 throw new HttpError(error.message, error.statusCode);

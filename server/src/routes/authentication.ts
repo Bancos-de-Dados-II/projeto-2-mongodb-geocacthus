@@ -35,10 +35,11 @@ router.post("/register", uploadService.singleUpload, async (request: Request, re
 router.post("/login", async (request: Request, response: Response, next: NextFunction) => {
     try {    
         const { email, password } = request.body;
-        const token = await authService.login(email, password);
+        const { token, user } = await authService.login(email, password);
         response.status(200).json({
             message: "Usuário logado com sucesso.",
             token: token,
+            user: user
         });
     } catch (error) {
         next(error);
