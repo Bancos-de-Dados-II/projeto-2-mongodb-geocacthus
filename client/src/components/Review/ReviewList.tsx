@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { getReviews } from '../../service/reviewService';
 import { IUser, getUserById } from '../../service/userService';
 import "./ReviewList.css"
+import ReviewCard from './ReviewCard';
+import { Card } from '../ui/card';
 
 
 interface IReview {
@@ -34,7 +36,7 @@ const ReviewList: React.FC<{ locationId: string }> = ({ locationId }) => {
                         }
                     }
                 }
-                
+
                 setUsers(usersData);
             } catch (error) {
                 if (error instanceof Error) {
@@ -49,17 +51,17 @@ const ReviewList: React.FC<{ locationId: string }> = ({ locationId }) => {
     }, [locationId]);
 
     return (
-        <div>
-            <h3>Avaliações</h3>
+        <div className="w-full">
             {reviews.length > 0 ? (
-                <ul className="review-list">
+                <ul className="space-y-4">
                     {reviews.map((review) => (
-                        <li className="review-item" key={review._id}>
-                            { /*<img src={users[review.userID]?.image || 'default-profile.png'} alt={users[review.userID]?.name || 'Usuário'} /> */}
-                            <div className="review-content">
-                                <div className="review-author"></div>
-                            </div>
-                            <strong>{users[review.userID]?.name || 'Usuário desconhecido'}</strong>: {review.comment} ({review.rating}/5)
+                        <li key={review._id}>
+                            <ReviewCard
+                                userName={users[review.userID]?.name || 'Usuário desconhecido'}
+                                userImage={users[review.userID]?.image || 'default-profile.png'}
+                                rating={review.rating}
+                                comment={review.comment}
+                            />
                         </li>
                     ))}
                 </ul>
@@ -68,6 +70,7 @@ const ReviewList: React.FC<{ locationId: string }> = ({ locationId }) => {
             )}
         </div>
     );
+
 };
 
 export default ReviewList;

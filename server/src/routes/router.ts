@@ -1,10 +1,12 @@
 import { Response, Request, Router } from "express";
+import express from "express";
 
 import authRouter from "./authentication";
 import userRouter from "./users";
 import touristPlaceRouter from "./touristPlace";
 import reviewRouter from "./reviews";
 import fileRouter from "./file";
+import path from "path";
 
 let apiRoute: string;
 export const configIndeceServerPoint = (indecePoint: string) => {
@@ -39,5 +41,6 @@ router.use(`${indceRouter.users}`, userRouter);
 router.use(`${indceRouter.tourist_places}`, touristPlaceRouter);
 router.use(`${indceRouter.reviews}`, reviewRouter);
 router.use(`${indceRouter.files}`, fileRouter);
+router.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
 
 export default router;

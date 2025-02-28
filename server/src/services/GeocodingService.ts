@@ -15,7 +15,8 @@ class GeocodingService {
         const street = address.number === "S/N" ? `S/N/${address.street}` : `${address.number}/${address.street}`;
         const { city, state, country, postalcode } = address;
 
-        console.log(street);
+        console.log(address)
+        console.log(city, state, country)
         
         try {
             const response = await axios.get("https://nominatim.openstreetmap.org/search", {
@@ -23,17 +24,17 @@ class GeocodingService {
                     "User-Agent": `GeoCacthus/1.0 (${process.env.EMAIL_AGENT})`,
                 },
                 params: {
-                    street,
                     city,
                     state,
                     country,
-                    postalcode,
                     format: "json",
                     addressdetails: 1,
                     limit: 1,
                 },
                 timeout: 10000,
             });
+
+            console.log(response.request);
 
             if (!response.data || response.data.length === 0) {
                 throw new HttpError("Endereço não encontrado. Por favor, revise o endereço informado.", 404);

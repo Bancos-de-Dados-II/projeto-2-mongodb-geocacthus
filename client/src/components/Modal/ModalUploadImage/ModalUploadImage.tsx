@@ -6,7 +6,7 @@ import { PhotoIcon } from "@heroicons/react/24/solid";
 interface ModalUploadImageProps {
     isOpen: boolean;
     onClose: () => void;
-    onUpload: (imageUrls: string[]) => void;
+    onUpload: (images: File[]) => void;
 }
 
 const ModalUploadImage: React.FC<ModalUploadImageProps> = ({ isOpen, onClose, onUpload }) => {
@@ -15,6 +15,7 @@ const ModalUploadImage: React.FC<ModalUploadImageProps> = ({ isOpen, onClose, on
 
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(event.target.files || []);
+
         if (files.length > 0) {
             setSelectedImages((prev) => [...prev, ...files]);
 
@@ -24,7 +25,7 @@ const ModalUploadImage: React.FC<ModalUploadImageProps> = ({ isOpen, onClose, on
     };
 
     const handleNext = () => {
-        onUpload(previewUrls);
+        onUpload(selectedImages, previewUrls);
         onClose();
     };
 

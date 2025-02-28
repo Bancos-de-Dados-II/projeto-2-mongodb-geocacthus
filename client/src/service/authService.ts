@@ -10,6 +10,7 @@ interface RegisterData {
     name: string;
     email: string;
     password: string;
+    image: File | null;
 }
 
 interface LoginResponse {
@@ -37,13 +38,11 @@ const login = async (formData: LoginData): Promise<LoginResponse> => {
     return data;
 };
 
-const register = async (formData: LoginData) => {
+const register = async (formData: FormData) => {
+    console.log(formData);
     const response = await fetch(`${apiConfig.baseUrl}/auth/register`, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData)
+        body: formData
     });
 
     if (!response.ok) {

@@ -15,14 +15,23 @@ function SignUp() {
         name: "",
         email: "",
         password: "",
+        image: null
     });
 
     const [errorMessage, setErrorMessage] = useState<string>("");
+    const [image, setImage] = useState<File | null>(null);
     const navigate = useNavigate();
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
+    };
+
+    const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setImage(file);
+        }
     };
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -33,11 +42,22 @@ function SignUp() {
             return;
         }
 
+        console.log(image);
+
         try {
-            await registerService(formData);
+            const formDataWithImage = new FormData();
+            formDataWithImage.append("name", formData.name);
+            formDataWithImage.append("email", formData.email);
+            formDataWithImage.append("password", formData.password);
+            if (image) {
+                formDataWithImage.append("file", image);
+            }
+
+            await registerService(formDataWithImage);
 
             alert("User registered successfully!");
-            setFormData({ name: "", email: "", password: "" });
+            setFormData({ name: "", email: "", password: "", image: null });
+            setImage(null)
             navigate("/signin");
         } catch (error) {
             setErrorMessage((error as Error).message);
@@ -51,7 +71,7 @@ function SignUp() {
                     <h2 className={styles.formTitle}>Sign Up</h2>
                     <form onSubmit={handleSubmit}>
                         <div className={styles.formGroup}>
-                            <img src={UserIcon} alt="User icon" className={styles.iconsForm}/>
+                            <img src={UserIcon} alt="User icon" className={styles.iconsForm} />
                             <input
                                 id="signup-name"
                                 type="text"
@@ -63,7 +83,7 @@ function SignUp() {
                             />
                         </div>
                         <div className={styles.formGroup}>
-                            <img src={EmailIcon} alt="Email icon" className={styles.iconsForm}/>
+                            <img src={EmailIcon} alt="Email icon" className={styles.iconsForm} />
                             <input
                                 id="signup-email"
                                 type="email"
@@ -75,7 +95,7 @@ function SignUp() {
                             />
                         </div>
                         <div className={styles.formGroup}>
-                            <img src={PasswordIcon} alt="Password icon" className={styles.iconsForm}/>
+                            <img src={PasswordIcon} alt="Password icon" className={styles.iconsForm} />
                             <input
                                 id="signup-password"
                                 type="password"
@@ -86,6 +106,20 @@ function SignUp() {
                                 required
                             />
                         </div>
+
+                        <div className={styles.formGroup}>
+                            <label htmlFor="signup-image">
+                                Upload Profile Image
+                            </label>
+                            <input
+                                id="signup-image"
+                                type="file"
+                                name="image"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                            />
+                        </div>
+
                         <button type="submit">Finish</button>
                     </form>
                     {errorMessage && (

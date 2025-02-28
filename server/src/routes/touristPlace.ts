@@ -4,11 +4,13 @@ import TouristPlace from "../models/touristPlace";
 import authenticateToken from "../utils/middlewares/authenticateToken";
 import GeocodingService from "../services/GeocodingService";
 import HttpError from "../utils/error/httpError";
+import FileService from "../services/fileService";
 
 const router = Router();
+const fileService = new FileService();
+const uploadService = new FileService();
 const touristPlaceService = new TouristPlaceService(TouristPlace);
 const geocodingService = new GeocodingService();
- 
 
 
 router.get("/", async (request: Request, response: Response, next: NextFunction) => {
@@ -20,7 +22,7 @@ router.get("/", async (request: Request, response: Response, next: NextFunction)
         next(error);
     }
 });
-  
+
 router.get("/:id", async (request: Request, response: Response, next: NextFunction) => {
     try {
         const { id } = request.params;
@@ -30,37 +32,46 @@ router.get("/:id", async (request: Request, response: Response, next: NextFuncti
         next(error);
     }
 });
-  
-router.post("/", authenticateToken, async (request: Request, response: Response, next: NextFunction) => {
+
+router.post("/", authenticateToken, uploadService.multipleUploads, async (request: Request, response: Response, next: NextFunction) => {
     try {
         const userAuth = request.user;
-        console.log(userAuth);
         if (!userAuth) {
             throw new Error("Usuário não autenticado.");
         }
 
-        const { latitude, longitude, ...data } = request.body;
+        const { address, ...data } = request.body;
 
-        if (!latitude || !longitude) {
-            response.status(400).json({ message: "Missing required fields: latitude and longitude" });
+        if (!address) {
+            throw new HttpError("O endereço é obrigatório.", 400);
         }
+
+        const { lat, lon } = await geocodingService.getCoordinates(address);
+
+        const imageUrls = request.files
+            ? (request.files as Express.Multer.File[]).map(file => {
+                return fileService.generateImageUrl(file, request);
+            })
+            : [];
+
 
         const locationData = {
             ...data,
             location: {
                 type: 'Point',
-                coordinates: [longitude, latitude],
-            }
+                coordinates: [lon, lat],
+            },
+            images: imageUrls
         };
 
         const newLocation = await touristPlaceService.createTouristLocation(locationData, userAuth);
-      
+
         response.status(201).json(newLocation);
     } catch (error) {
         next(error);
     }
 });
-  
+
 router.put("/:id", async (request: Request, response: Response, next: NextFunction) => {
     try {
         const { id } = request.params;
@@ -71,7 +82,7 @@ router.put("/:id", async (request: Request, response: Response, next: NextFuncti
         next(error);
     }
 });
-  
+
 router.delete("/:id", async (request: Request, response: Response, next: NextFunction) => {
     try {
         const { id } = request.params;

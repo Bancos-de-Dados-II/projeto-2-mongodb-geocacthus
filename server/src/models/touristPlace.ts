@@ -6,7 +6,7 @@ interface ITouristPlace {
     name: string;
     description: string;
     category: string;
-    image: string;
+    images: string[];
     phone: string;
     location: {
         type: string;
@@ -30,10 +30,10 @@ const TouristPlaceSchema: Schema = new Schema<ITouristPlace>({
         type: String,
         required: true
     },
-    image: {
+    images: [{
         type: String,
-        required: true,
-    },
+        required: true
+    }],
     phone: {
         type: String,
         required: true

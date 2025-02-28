@@ -14,9 +14,9 @@ class AuthService {
     }
 
     async createUser(userDTO: User) {
-        const { name, email, password } = userDTO;
+        const { name, email, password, image } = userDTO;
     
-        if (!email || !name || !password) {
+        if (!email || !name || !password || !image) {
             throw new HttpError("Todos os campos são obrigatórios.", 400);
         }
 
@@ -34,6 +34,7 @@ class AuthService {
                 name,
                 email,
                 password: hashedPassword,
+                image
             });
     
             return { status: 201, message: "Usuário criado com sucesso!", data: novoUsuario };

@@ -1,9 +1,8 @@
 import "../CreateTouristPlace.css";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import locationService, { Country, State } from "../../../service/locationService";
 import touristServices from "../../../service/touristPlaceService";
-import { useFetchOnce } from "../../../hooks/useFetchOnce";
 import FormField from "../../FormField/FormField";
 import FormSelect from "../../FormSelect/FormSelect";
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from "../../ui/dialog";
@@ -25,9 +24,9 @@ interface FormData {
     name: string;
     description: string;
     category: string;
-    image: string;
     phone: string;
     address: Address;
+    files: File[];
 }
 
 interface ModalCreateLocationProps {
@@ -35,85 +34,80 @@ interface ModalCreateLocationProps {
     onClose: () => void;
 }
 
+const initialState: FormData = {
+    name: "",
+    description: "",
+    category: "",
+    phone: "",
+    address: {
+        street: "",
+        number: "",
+        city: "",
+        state: "",
+        country: "",
+        postalcode: "",
+    },
+    files: [],
+};
+
+const formReducer = (state: FormData, action: { type: string; payload: any }) => {
+    switch (action.type) {
+        case "SET_FIELD":
+            return { ...state, [action.payload.field]: action.payload.value };
+        case "SET_ADDRESS_FIELD":
+            return {
+                ...state,
+                address: { ...state.address, [action.payload.field]: action.payload.value },
+            };
+        case "SET_FILES":
+            return { ...state, files: action.payload };
+        case "RESET":
+            return initialState;
+        default:
+            return state;
+    }
+};
+
 const ModalCreateLocation: React.FC<ModalCreateLocationProps> = ({ isOpen, onClose }) => {
     const navigate = useNavigate();
+    const [formData, dispatch] = useReducer(formReducer, initialState);
     const [loading, setLoading] = useState(false);
-    const [formData, setFormData] = useState<FormData>({
-        name: "",
-        description: "",
-        category: "",
-        image: "",
-        phone: "",
-        address: {
-            street: "",
-            number: "",
-            city: "",
-            state: "",
-            country: "",
-            postalcode: "",
-        },
-    });
-
     const [error, setError] = useState<string | null>(null);
     const [countries, setCountries] = useState<Country[]>([]);
     const [states, setStates] = useState<State[]>([]);
     const [cities, setCities] = useState<string[]>([]);
     const [showUploadModal, setShowUploadModal] = useState(false);
-    const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+    const [uploadedImages, setUploadedImages] = useState<File[]>([]);
+    const [previewImages, setPreviewImages] = useState<string[]>([]);
 
-    useFetchOnce(async () => {
-        try {
-            const countryList = await locationService.getCountries();
-            setCountries(countryList.sort((a, b) => a.name.localeCompare(b.name)));
-        } catch (error) {
-            setError("Erro ao carregar a lista de países." + (error as Error).message);
-        }
-    });
+    useEffect(() => {
+        locationService.getCountries()
+            .then(data => setCountries(data.sort((a: any, b: any) => a.name.localeCompare(b.name))))
+            .catch(error => setError("Erro ao carregar países: " + error.message));
+    }, []);
 
-    const handleCountryChange = async (event: string) => {
-        setFormData((prevState) => ({
-            ...prevState,
-            address: { ...prevState.address, country: event },
-        }));
-
+    const handleCountryChange = useCallback(async (event: string) => {
+        dispatch({ type: "SET_ADDRESS_FIELD", payload: { field: "country", value: event } });
         if (event === "Brazil") {
-            try {
-                const stateList = await locationService.getStates();
-                setStates(stateList.sort((a, b) => a.name.localeCompare(b.name)));
-            } catch (error) {
-                setError("Erro ao carregar os estados." + (error as Error).message);
-            }
+            locationService.getStates()
+                .then(setStates)
+                .catch(error => setError("Erro ao carregar estados: " + error.message));
         } else {
             setStates([]);
             setCities([]);
         }
-    };
+    }, []);
 
-    const handleStateChange = async (event: string) => {
-        setFormData((prevState) => ({
-            ...prevState,
-            address: { ...prevState.address, state: event },
-        }));
-
-        try {
-            const cityList = await locationService.getCities(event);
-            setCities(cityList.sort((a, b) => a.localeCompare(b)));
-        } catch (error) {
-            setError("Erro ao carregar as cidades." + (error as Error).message);
-        }
-    };
+    const handleStateChange = useCallback(async (event: string) => {
+        dispatch({ type: "SET_ADDRESS_FIELD", payload: { field: "state", value: event } });
+        locationService.getCities(event)
+            .then(setCities)
+            .catch(error => setError("Erro ao carregar cidades: " + error.message));
+    }, []);
 
     const handleSave = async () => {
-        const stateAddress = (
-            formData.address.street &&
-            formData.address.number &&
-            formData.address.city &&
-            formData.address.state &&
-            formData.address.country &&
-            formData.address.postalcode
-        ) ? true : false;
-
-        if (!formData.name || !formData.description || !formData.category || !formData.phone || !stateAddress) {
+        if (!formData.name || !formData.description || !formData.category || !formData.phone ||
+            !formData.address.country || !formData.address.state || !formData.address.city || !formData.address.postalcode) {
             setError("Por favor, preencha todos os campos obrigatórios.");
             return;
         }
@@ -125,23 +119,46 @@ const ModalCreateLocation: React.FC<ModalCreateLocationProps> = ({ isOpen, onClo
         }
 
         setLoading(true);
+
+        const formDataToSend = new FormData();
+        formDataToSend.append("name", formData.name);
+        formDataToSend.append("description", formData.description);
+        formDataToSend.append("category", formData.category);
+        formDataToSend.append("phone", formData.phone);
+        formDataToSend.append("address[street]", formData.address.street);
+        formDataToSend.append("address[number]", formData.address.number);
+        formDataToSend.append("address[city]", formData.address.city);
+        formDataToSend.append("address[state]", formData.address.state);
+        formDataToSend.append("address[country]", formData.address.country);
+        formDataToSend.append("address[postalcode]", formData.address.postalcode);
+
+        formData.files.forEach((file) => {
+            formDataToSend.append("files", file);
+        });
+
+        console.log(formData);
+        for (const [key, value] of formDataToSend.entries()) {
+            console.log(key, value);
+        }
+        
+
         try {
-            setError(null);
-            await touristServices.createTouristLocation(formData, token);
+            await touristServices.createTouristLocation(formDataToSend, token);
             alert("Local turístico cadastrado com sucesso!");
             navigate("/home");
+            onClose();
         } catch (error) {
-            const message = (error as Error).message || "Erro ao salvar o local turístico.";
-            setError(message);
+            setError(`Erro ao salvar o local turístico: ${error.message}`);
         } finally {
             setLoading(false);
         }
     };
 
-    const handleImageUpload = (images: string[]) => {
-        setUploadedImages(images);
+    const handleImageUpload = (images: File[]) => {
+        dispatch({ type: "SET_FILES", payload: images });
         setShowUploadModal(false);
     };
+
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
@@ -160,7 +177,7 @@ const ModalCreateLocation: React.FC<ModalCreateLocationProps> = ({ isOpen, onClo
                             type="text"
                             name="name"
                             value={formData.name}
-                            onChange={(event) => setFormData({ ...formData, name: event.target.value })}
+                            onChange={(e) => dispatch({ type: "SET_FIELD", payload: { field: "name", value: e.target.value } })}
                             placeholder="Nome"
                             required
                         />
@@ -171,7 +188,7 @@ const ModalCreateLocation: React.FC<ModalCreateLocationProps> = ({ isOpen, onClo
                             type="text"
                             name="description"
                             value={formData.description}
-                            onChange={(event) => setFormData({ ...formData, description: event.target.value })}
+                            onChange={(e) => dispatch({ type: "SET_FIELD", payload: { field: "description", value: e.target.value } })}
                             placeholder="Descrição"
                             required
                         />
@@ -182,7 +199,7 @@ const ModalCreateLocation: React.FC<ModalCreateLocationProps> = ({ isOpen, onClo
                             type="text"
                             name="category"
                             value={formData.category}
-                            onChange={(event) => setFormData({ ...formData, category: event.target.value })}
+                            onChange={(e) => dispatch({ type: "SET_FIELD", payload: { field: "category", value: e.target.value } })}
                             placeholder="Categoria"
                             required
                         />
@@ -193,7 +210,7 @@ const ModalCreateLocation: React.FC<ModalCreateLocationProps> = ({ isOpen, onClo
                             type="text"
                             name="phone"
                             value={formData.phone}
-                            onChange={(event) => setFormData({ ...formData, phone: event.target.value })}
+                            onChange={(e) => dispatch({ type: "SET_FIELD", payload: { field: "phone", value: e.target.value } })}
                             placeholder="Telefone"
                             required
                         />
@@ -205,7 +222,7 @@ const ModalCreateLocation: React.FC<ModalCreateLocationProps> = ({ isOpen, onClo
                                 name="address.country"
                                 value={formData.address.country}
                                 placeholder="Selecione um país"
-                                options={countries.map((country) => ({ value: country.name, label: country.name }))}
+                                options={countries.map((c) => ({ value: c.name, label: c.name }))}
                                 onChange={handleCountryChange}
                                 required
                             />
@@ -217,7 +234,7 @@ const ModalCreateLocation: React.FC<ModalCreateLocationProps> = ({ isOpen, onClo
                                     name="address.state"
                                     value={formData.address.state}
                                     placeholder="Selecione um estado"
-                                    options={states.map((state) => ({ value: state.code, label: state.name }))}
+                                    options={states.map((s) => ({ value: s.code, label: s.name }))}
                                     onChange={handleStateChange}
                                     required
                                 />
@@ -230,11 +247,8 @@ const ModalCreateLocation: React.FC<ModalCreateLocationProps> = ({ isOpen, onClo
                                     name="address.city"
                                     value={formData.address.city}
                                     placeholder="Selecione uma cidade"
-                                    options={cities.map((city) => ({ value: city, label: city }))}
-                                    onChange={(event) => setFormData({
-                                        ...formData,
-                                        address: { ...formData.address, city: event }
-                                    })}
+                                    options={cities.map((c) => ({ value: c, label: c }))}
+                                    onChange={(e) => dispatch({ type: "SET_ADDRESS_FIELD", payload: { field: "city", value: e } })}
                                     required
                                 />
                             )}
@@ -245,10 +259,7 @@ const ModalCreateLocation: React.FC<ModalCreateLocationProps> = ({ isOpen, onClo
                                 type="text"
                                 name="cep"
                                 value={formData.address.postalcode}
-                                onChange={(event) => setFormData({
-                                    ...formData,
-                                    address: { ...formData.address, postalcode: event.target.value }
-                                })}
+                                onChange={(e) => dispatch({ type: "SET_ADDRESS_FIELD", payload: { field: "postalcode", value: e.target.value } })}
                                 placeholder="00000-000"
                                 required
                             />
@@ -257,7 +268,7 @@ const ModalCreateLocation: React.FC<ModalCreateLocationProps> = ({ isOpen, onClo
 
                     {uploadedImages.length > 0 && (
                         <div className="flex flex-wrap gap-3 overflow-y-auto max-h-72 p-2 rounded-lg">
-                            {uploadedImages.map((image, index) => (
+                            {previewImages.map((image, index) => (
                                 <img
                                     key={index}
                                     src={image}
@@ -278,7 +289,7 @@ const ModalCreateLocation: React.FC<ModalCreateLocationProps> = ({ isOpen, onClo
                         <PhotoIcon className="h-5 w-5" />
                         <span>Upload Imagens</span>
                     </Button>
-                    <Button type="submit" className="ml-auto">Save</Button>
+                    <Button onClick={handleSave} disabled={loading} type="submit" className="ml-auto">Save</Button>
                 </DialogFooter>
             </DialogContent>
 

@@ -20,6 +20,8 @@ class TouristPlaceService {
         if (!location) {
             throw new Error("Local turístico não encontrado");
         }
+
+        console.log(location);
         return location;
     }
     

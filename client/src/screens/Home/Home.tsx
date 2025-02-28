@@ -6,6 +6,7 @@ import touristServices, { ITouristLocationBase } from "../../service/touristPlac
 import Header from "../../components/Header/Header";
 import { useFetchOnce } from "../../hooks/useFetchOnce";
 import ReviewList from "../../components/Review/ReviewList";
+import LocationInfoBox from "../../components/LocalInfoBox/LocalInfoBox";
 
 function Home() {
     const [touristLocations, setTouristLocations] = useState<ITouristLocationBase[]>([]);
@@ -24,30 +25,7 @@ function Home() {
         <div className="home-container">
             <Header />
             <div className="content-main">
-                <div className="box-info">
-                    {selectedLocation ? (
-                        <div className="info-card">
-                            <h2 className="location-title">{selectedLocation.name}</h2>
-
-                            <div className="image-container">
-                                <img src={selectedLocation.image} alt={selectedLocation.name} />
-                            </div>
-                            
-                            <p className="location-description">{selectedLocation.description}</p>
-
-                            <div className="extra-details">
-                                <p><strong>Telefone:</strong> {selectedLocation.phone}</p>
-                            </div>
-
-                            <div className="camp-reviews">
-                                <h3>Reviews</h3>
-                                <ReviewList locationId={selectedLocation.id} />
-                            </div>
-                        </div>
-                    ) : (
-                        <h2>Seja bem-vindo ao nosso site de turismo!</h2>
-                    )}
-                </div>
+                <LocationInfoBox selectedLocation={selectedLocation}/>
 
                 <div className="box-map">
                     <MapContainer

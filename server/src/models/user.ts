@@ -8,6 +8,7 @@ class User extends Model {
     declare id: CreationOptional<string>;
     declare name: string;
     declare email: string;
+    declare image: string;
     declare password: string;
 }
 
@@ -31,6 +32,10 @@ User.init({
         validate: {
             isEmail: true,
         },
+    },
+    image: {
+        type: DataTypes.STRING,
+        allowNull: false,
     },
     password: {
         type: DataTypes.STRING,

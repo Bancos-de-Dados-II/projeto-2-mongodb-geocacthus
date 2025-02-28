@@ -2,16 +2,26 @@ import 'dotenv/config';
 import { Router, Request, Response, NextFunction } from "express";
 import AuthService from '../services/authService';
 import User from '../models/user';
+import FileService from '../services/fileService';
 
 
 const SECRET_KEY: string = process.env.SECRET_KEY || 'default_secret_key';
 const router = Router();
 const authService = new AuthService(User, SECRET_KEY)
+const uploadService = new FileService();
+const fileService = new FileService();
 
-router.post("/register", async (request: Request, response: Response, next: NextFunction) => {
+router.post("/register", uploadService.singleUpload, async (request: Request, response: Response, next: NextFunction) => {
     try {
         const userDTO = request.body;
-        const newUser = await authService.createUser(userDTO);
+
+        let imageUrl: string | undefined;
+
+        if (request.file) {
+            imageUrl = fileService.generateImageUrl(request.file, request);
+        }
+
+        const newUser = await authService.createUser({ ...userDTO, image:imageUrl });
 
         response.status(201).json({
             message: "Usuário criado com sucesso.",
