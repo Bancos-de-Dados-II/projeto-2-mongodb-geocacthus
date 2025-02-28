@@ -3,7 +3,6 @@ import { Navigate, Route, Routes } from "react-router-dom"
 import SignIn from "../screens/SignIn/SignIn";
 import SignUp from "../screens/SignUp/SignUp";
 import Home from "../screens/Home/Home";
-import CreateTouristLocation from "../screens/CreateTuristLocation/CreateTouristLocation";
 import Profile from "../screens/Profile/Profile";
 
 import ProtectedRoute from "../components/ProtectedRoute";
