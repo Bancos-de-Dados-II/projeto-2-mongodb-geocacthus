@@ -14,7 +14,9 @@ function Profile() {
 
     const fetchLocations = async () => {
         try {
+            console.log(my_token);
             const response = await touristServices.fetchTouristLocationsByUser(my_token);
+            console.log(response);
             if (response) setLocations(response);
         } catch (error) {
             console.error("Erro ao buscar locais turísticos:", error);

@@ -14,15 +14,24 @@ class TouristPlaceService {
     }
     
     async fetchTouristLocationById(id: string) {
-        const location = await this.touristPlaceModel.findById(id)
-            .populate('evaluationsLocations openingHours')
-            .exec();
+        const location = await this.touristPlaceModel.findById(id);
         if (!location) {
             throw new Error("Local turístico não encontrado");
         }
 
         console.log(location);
         return location;
+    }
+
+    async fetchTouristLocationByUserId(userId: string) {
+        const locations = await this.touristPlaceModel.find({ userID: userId });
+    
+        if (!locations || locations.length === 0) {
+            throw new Error("Nenhum local turístico encontrado para este usuário");
+        }
+    
+        console.log(locations);
+        return locations;
     }
     
     async createTouristLocation(data: ITouristPlace, user: User) {

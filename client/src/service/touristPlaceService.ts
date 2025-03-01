@@ -116,7 +116,7 @@ const updateTouristLocation = async (touristID: string, touristPlace: ITouristUp
 const deleteTouristLocation = async (id: string, token: string) =>
     requestHandler("delete", `/tourist-place/${id}`, token);
 
-const fetchTouristLocationsByUser = async (token: string) =>
+const fetchTouristLocationsByUser = async (token: string | null) =>
     requestHandler("get", "/users/tourist-places/my-places", token);
 
 

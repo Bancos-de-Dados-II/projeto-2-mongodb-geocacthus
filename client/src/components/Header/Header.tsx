@@ -30,9 +30,9 @@ function Header() {
             <div className="header-logo">
                 <Link to="/home">
                     {isLoggedIn ? (
-                        <h1>Agent Map</h1>
+                        <h1>GeoCacthus</h1>
                     ) : (
-                        <h1>Tourist Map</h1>
+                        <h1>GeoCacthus</h1>
                     )}
                 </Link>
             </div>
