@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/user";
 import HttpError from "../utils/error/httpError";
 import bcrypt from 'bcrypt';
+import { auth } from "../config/firebase";
 
 class AuthService {
     private userModel: ModelStatic<User>;
@@ -20,21 +21,18 @@ class AuthService {
             throw new HttpError("Todos os campos são obrigatórios.", 400);
         }
 
-        const usuarioExiste = await this.userModel.findOne({ where: { email } });
+        const usuarioExiste = await auth.getUserByEmail(email);
 
         if (usuarioExiste) {
             throw new HttpError("E-mail já cadastrado.", 400);
         }
     
         try {
-            const salt = await bcrypt.genSalt();
-            const hashedPassword = await bcrypt.hash(password, salt);
-    
-            const novoUsuario = await this.userModel.create({
-                name,
+            const novoUsuario = await auth.createUser({
                 email,
-                password: hashedPassword,
-                image
+                password,
+                displayName: name,
+                photoURL: image,
             });
     
             return { status: 201, message: "Usuário criado com sucesso!", data: novoUsuario };
@@ -42,6 +40,10 @@ class AuthService {
             if (error instanceof ValidationError) {
                 const errors = error.errors.map((err: ValidationErrorItem) => err.message);
                 throw new HttpError(`Erro de validação.`, 400, new Error(errors.join(", ")));
+            }
+
+            if (error instanceof Error) {
+                throw new HttpError("Erro interno ao criar usuário.", 500, error);
             }
     
             throw new HttpError("Erro interno ao criar usuário.", 500);
@@ -54,7 +56,7 @@ class AuthService {
         }
 
         try {
-            const user = await this.userModel.findOne({ where: { email } });
+            const user = await auth.getUserByEmail(email);
 
             if (!user) {
                 throw new HttpError("Usuário não encontrado.", 404);
@@ -81,7 +83,6 @@ class AuthService {
             throw new HttpError(`Erro interno ao realizar login: erro`, 500);
         }
     }
-
 }
 
 
